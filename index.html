@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Echo — Ecommerce Email & Retention</title>
+  <meta name="description" content="Echo builds and runs the email & SMS retention system behind profitable ecommerce brands. Flows, campaigns, and design that turn one-time buyers into repeat revenue." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F9F8F3;
+      --bg-warm: #F2F0E7;
+      --ink: #141414;
+      --ink-soft: #57554e;
+      --btn: #282828;
+      --line: #e4e0d4;
+      --line-strong: #d6d1c2;
+      --accent: #C4552F; /* restrained warm terracotta, used sparingly */
+      --radius: 9px;
+      --maxw: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    /* smooth scrolling handled by Lenis (JS) — see bottom of file; instant-jump fallback if JS/CDN unavailable */
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, .serif {
+      font-family: "Fraunces", Georgia, "Times New Roman", serif;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.04;
+      margin: 0;
+    }
+    p { margin: 0; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+    .eyebrow {
+      font-family: "Fraunces", serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      display: inline-block;
+    }
+    .accent { color: var(--accent); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--btn);
+      color: var(--bg);
+      font-family: "Inter", sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 13px 22px;
+      border-radius: var(--radius);
+      border: 1px solid var(--btn);
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); opacity: .92; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line-strong);
+    }
+    .btn-ghost:hover { background: var(--bg-warm); }
+
+    /* Nav */
+    header.nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(249,248,243,.82);
+      backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+    .brand { font-family: "Fraunces", serif; font-weight: 600; font-size: 26px; letter-spacing: -0.02em; }
+    .brand span { color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.02em; margin-left: 6px; }
+    .nav-links { display: flex; gap: 30px; align-items: center; }
+    .nav-links a { font-size: 15px; color: var(--ink-soft); font-weight: 500; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta { display: flex; align-items: center; gap: 14px; }
+    .menu-btn { display: none; background: none; border: 0; cursor: pointer; font-size: 24px; }
+
+    /* Hero */
+    .hero { padding: 92px 0 70px; text-align: center; }
+    .hero .eyebrow { margin-bottom: 22px; }
+    .hero h1 { font-size: clamp(44px, 8vw, 92px); font-weight: 600; max-width: 15ch; margin: 0 auto; }
+    .hero p.sub {
+      font-size: clamp(17px, 2.2vw, 21px);
+      color: var(--ink-soft);
+      max-width: 620px;
+      margin: 28px auto 0;
+    }
+    .hero-cta { margin-top: 38px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .trust-line { margin-top: 30px; font-size: 14px; color: var(--ink-soft); }
+    .trust-line strong { color: var(--ink); font-weight: 600; }
+
+    /* Stats */
+    .stats { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-warm); }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .stat { padding: 44px 24px; text-align: center; border-right: 1px solid var(--line); }
+    .stat:last-child { border-right: 0; }
+    .stat .num { font-family: "Fraunces", serif; font-size: clamp(38px, 5vw, 54px); font-weight: 600; line-height: 1; }
+    .stat .label { margin-top: 10px; font-size: 14px; color: var(--ink-soft); }
+    .placeholder-note {
+      font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--accent); font-weight: 600; margin-top: 8px;
+    }
+
+    /* Sections */
+    section { padding: 96px 0; }
+    .section-head { max-width: 720px; }
+    .section-head.center { margin: 0 auto; text-align: center; }
+    .section-head h2 { font-size: clamp(32px, 5vw, 52px); }
+    .section-head p { color: var(--ink-soft); margin-top: 20px; font-size: 19px; }
+
+    /* Value prop */
+    .valueprop { text-align: center; padding: 110px 0; }
+    .valueprop h2 { font-size: clamp(34px, 6vw, 68px); max-width: 16ch; margin: 0 auto; }
+    .valueprop p { max-width: 600px; margin: 28px auto 0; color: var(--ink-soft); font-size: 20px; }
+
+    /* Process */
+    .process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 60px; }
+    .step {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 36px 32px;
+    }
+    .step .n {
+      font-family: "Fraunces", serif; font-size: 15px; font-weight: 600;
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--btn); color: var(--bg); margin-bottom: 24px;
+    }
+    .step h3 { font-size: 25px; }
+    .step p { color: var(--ink-soft); margin-top: 12px; font-size: 16px; }
+
+    /* Services */
+    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; margin-top: 60px; }
+    .svc {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 40px;
+      background: var(--bg-warm);
+      transition: border-color .2s ease, transform .2s ease;
+    }
+    .svc:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+    .svc .ic { font-size: 26px; margin-bottom: 18px; }
+    .svc h3 { font-size: 24px; }
+    .svc p { color: var(--ink-soft); margin-top: 12px; font-size: 16px; }
+
+    /* Email design showcase */
+    .designs { background: var(--btn); color: var(--bg); }
+    .designs .section-head h2 { color: var(--bg); }
+    .designs .section-head p { color: #b8b5ab; }
+    .designs .eyebrow { color: #9c988c; }
+    .email-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 60px; }
+    .email-card {
+      background: #f4f2ec;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 24px 50px rgba(0,0,0,.28);
+      position: relative;
+    }
+    .email-card .bar { height: 34px; background: #e7e4da; display: flex; align-items: center; gap: 6px; padding: 0 14px; }
+    .email-card .bar i { width: 9px; height: 9px; border-radius: 50%; background: #c9c5b8; display: inline-block; }
+    .email-body { padding: 20px; }
+    .ph { background: #e2ded2; border-radius: 8px; }
+    .ph-hero { height: 150px; display: flex; align-items: center; justify-content: center; border: 1.5px dashed #b9b4a5; background: repeating-linear-gradient(135deg, #eae7dd, #eae7dd 12px, #e4e0d4 12px, #e4e0d4 24px); }
+    .ph-hero span { font-size: 12px; color: #8a8578; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .ph-line { height: 11px; margin-top: 14px; }
+    .ph-line.w80 { width: 80%; }
+    .ph-line.w60 { width: 60%; }
+    .ph-line.w90 { width: 90%; }
+    .ph-btn { height: 38px; width: 150px; border-radius: 8px; background: var(--btn); margin-top: 22px; }
+    .email-card.tall .ph-hero { height: 220px; }
+    .email-card .tag {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(20,20,20,.75); color: #f4f2ec;
+      font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+      padding: 4px 9px; border-radius: 20px;
+    }
+    .designs-foot { margin-top: 46px; text-align: center; color: #9c988c; font-size: 14px; }
+
+    /* Deliverables */
+    .deliver-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px; align-items: start; }
+    .flows-list { list-style: none; padding: 0; margin: 34px 0 0; }
+    .flows-list li {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 0; border-bottom: 1px solid var(--line);
+      font-size: 17px; font-weight: 500;
+    }
+    .flows-list li .check {
+      flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%;
+      background: var(--ink); color: var(--bg);
+      display: flex; align-items: center; justify-content: center; font-size: 12px;
+    }
+    .flows-list li small { color: var(--ink-soft); font-weight: 400; margin-left: auto; font-size: 14px; }
+    .deliver-card {
+      background: var(--bg-warm); border: 1px solid var(--line);
+      border-radius: 18px; padding: 40px; position: sticky; top: 100px;
+    }
+    .deliver-card h3 { font-size: 26px; }
+    .deliver-card p { color: var(--ink-soft); margin-top: 14px; }
+    .deliver-card .btn { margin-top: 26px; width: 100%; justify-content: center; }
+
+    /* Comparison */
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 56px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+    .compare-col { padding: 40px; }
+    .compare-col.them { background: var(--bg-warm); }
+    .compare-col.us { background: var(--btn); color: var(--bg); }
+    .compare-col h3 { font-size: 22px; margin-bottom: 24px; }
+    .compare-col.us h3 { color: var(--bg); }
+    .compare-col ul { list-style: none; padding: 0; margin: 0; }
+    .compare-col li { padding: 13px 0; border-bottom: 1px solid var(--line); display: flex; gap: 12px; align-items: flex-start; font-size: 16px; }
+    .compare-col.us li { border-color: rgba(255,255,255,.12); }
+    .compare-col li:last-child { border-bottom: 0; }
+    .compare-col .mark { flex: 0 0 auto; font-weight: 700; }
+    .compare-col.them .mark { color: #b0a89a; }
+    .compare-col.us .mark { color: #e7a58c; }
+
+    /* Founder */
+    .founder { background: var(--bg-warm); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .founder-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 60px; align-items: center; }
+    .founder-photo {
+      aspect-ratio: 4/5; border-radius: 18px;
+      background: repeating-linear-gradient(135deg, #eae7dd, #eae7dd 14px, #e4e0d4 14px, #e4e0d4 28px);
+      border: 1.5px dashed #c3bdae;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .founder-photo span { font-size: 12px; color: #8a8578; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+    .founder h2 { font-size: clamp(30px, 4vw, 44px); }
+    .founder .role { color: var(--accent); font-weight: 600; margin-top: 14px; letter-spacing: .04em; text-transform: uppercase; font-size: 13px; }
+    .founder p { color: var(--ink-soft); margin-top: 18px; font-size: 17px; }
+    .founder .btn { margin-top: 28px; }
+
+    /* FAQ */
+    .faq-list { max-width: 820px; margin: 56px auto 0; }
+    .faq-item { border-bottom: 1px solid var(--line-strong); }
+    .faq-q {
+      width: 100%; text-align: left; background: none; border: 0; cursor: pointer;
+      padding: 26px 0; font-family: "Fraunces", serif; font-size: 22px; font-weight: 600; color: var(--ink);
+      display: flex; justify-content: space-between; align-items: center; gap: 20px;
+    }
+    .faq-q .plus { font-family: "Inter", sans-serif; font-size: 26px; color: var(--ink-soft); transition: transform .2s ease; flex: 0 0 auto; }
+    .faq-item.open .faq-q .plus { transform: rotate(45deg); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+    .faq-a p { color: var(--ink-soft); font-size: 17px; padding-bottom: 26px; }
+
+    /* Final CTA */
+    .final { text-align: center; padding: 120px 0; }
+    .final h2 { font-size: clamp(36px, 6vw, 66px); max-width: 16ch; margin: 0 auto; }
+    .final p { color: var(--ink-soft); font-size: 20px; margin: 26px auto 0; max-width: 540px; }
+    .final .btn { margin-top: 38px; padding: 16px 32px; font-size: 16px; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--line); padding: 50px 0; }
+    .foot-inner { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .foot-links { display: flex; gap: 26px; }
+    .foot-links a { color: var(--ink-soft); font-size: 15px; }
+    .foot-links a:hover { color: var(--ink); }
+    .foot-copy { color: var(--ink-soft); font-size: 14px; }
+
+    /* ===================== Motion & ambience ===================== */
+
+    /* Containers that hold an aurora */
+    .hero, .designs { position: relative; overflow: hidden; }
+    .hero > .wrap, .designs > .wrap { position: relative; z-index: 2; }
+
+    /* 9 — Slow-drifting aurora */
+    .aurora { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .aurora .blob { position: absolute; border-radius: 50%; filter: blur(72px); will-change: transform; }
+    .aurora--hero .b1 { width: 46vw; height: 46vw; top: -16vw; left: -8vw; background: #ecdcc2; opacity: .55; animation: drift1 24s ease-in-out infinite; }
+    .aurora--hero .b2 { width: 40vw; height: 40vw; top: -8vw; right: -8vw; background: #eccbb6; opacity: .42; animation: drift2 30s ease-in-out infinite; }
+    .aurora--dark .blob { filter: blur(92px); }
+    .aurora--dark .b1 { width: 44vw; height: 44vw; top: -12vw; left: 2vw; background: #C4552F; opacity: .40; animation: drift1 26s ease-in-out infinite; }
+    .aurora--dark .b2 { width: 40vw; height: 40vw; bottom: -16vw; right: 0; background: #9a6b3f; opacity: .34; animation: drift2 32s ease-in-out infinite; }
+    .aurora--dark .b3 { width: 32vw; height: 32vw; top: 26%; left: 42%; background: #7c4a55; opacity: .26; animation: drift3 22s ease-in-out infinite; }
+    @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(6%,-8%) scale(1.15); } }
+    @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1.05); } 50% { transform: translate(-7%,6%) scale(.92); } }
+    @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(8%,4%) scale(1.2); } }
+
+    /* 10 — Film grain overlay */
+    .grain {
+      position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+      z-index: 60; pointer-events: none; opacity: .045;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: grain .7s steps(4) infinite;
+    }
+    @keyframes grain {
+      0% { transform: translate(0,0); } 25% { transform: translate(-3%,2%); }
+      50% { transform: translate(2%,-3%); } 75% { transform: translate(-2%,-2%); } 100% { transform: translate(2%,3%); }
+    }
+
+    /* 11 — Logo marquee (placeholder logos) */
+    .logos-strip { padding: 44px 0 6px; }
+    .logos-strip .eyebrow { display: block; text-align: center; margin-bottom: 30px; }
+    .marquee {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    }
+    .marquee-track { display: flex; width: max-content; animation: marquee 34s linear infinite; }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    .marquee-group { display: flex; align-items: center; gap: 66px; padding-right: 66px; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .logo-ph { display: flex; align-items: center; gap: 12px; opacity: .5; white-space: nowrap; }
+    .logo-ph .mark { width: 30px; height: 30px; border-radius: 7px; background: #cfc9ba; flex: 0 0 auto; }
+    .logo-ph .mark.round { border-radius: 50%; }
+    .logo-ph .wm { font-family: "Fraunces", serif; font-weight: 600; font-size: 22px; letter-spacing: -0.01em; color: #8f8a7d; }
+
+    /* 3 — Editorial heading reveal (word-by-word rise). Gated on html.js so headings stay visible with no JS. */
+    html.js .reveal .word { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
+    html.js .reveal .word-inner { display: inline-block; transform: translateY(115%); transition: transform .85s cubic-bezier(.19,1,.22,1); }
+    html.js .reveal.is-visible .word-inner { transform: translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .aurora .blob, .grain, .marquee-track { animation: none !important; }
+      html.js .reveal .word-inner { transition: none; transform: none; }
+    }
+
+    /* ---- Inline copy editor (visible only when opened locally; hidden on the live site) ---- */
+    #echo-editor {
+      display: none; position: fixed; right: 18px; bottom: 18px; z-index: 9999;
+      gap: 10px; align-items: center; background: #282828; color: #F9F8F3;
+      padding: 10px 12px; border-radius: 12px; box-shadow: 0 12px 34px rgba(0,0,0,.28);
+      font-family: "Inter", sans-serif; font-size: 13px;
+    }
+    #echo-editor button {
+      font-family: "Inter", sans-serif; font-weight: 600; font-size: 13px; cursor: pointer;
+      border-radius: 8px; padding: 9px 14px; border: 1px solid transparent;
+    }
+    #ee-toggle { background: #F9F8F3; color: #141414; }
+    #ee-save { background: var(--accent); color: #fff; }
+    #ee-hint { color: #b8b5ab; max-width: 190px; line-height: 1.35; }
+    body.ee-editing [contenteditable="true"] { border-radius: 4px; }
+    body.ee-editing [contenteditable="true"]:hover { outline: 2px dashed var(--accent); outline-offset: 3px; }
+    body.ee-editing [contenteditable="true"]:focus { outline: 2px solid var(--accent); outline-offset: 3px; background: rgba(196,85,47,.06); }
+    @media print { #echo-editor { display: none !important; } }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .menu-btn { display: block; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat { border-right: 0; border-bottom: 1px solid var(--line); }
+      .stat:last-child { border-bottom: 0; }
+      .process-grid, .services-grid, .email-grid, .deliver-grid, .compare, .founder-grid { grid-template-columns: 1fr; }
+      .deliver-card { position: static; }
+      .founder-photo { max-width: 340px; }
+      section { padding: 72px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand">Echo<span>· Email &amp; Retention</span></div>
+      <nav class="nav-links">
+        <a href="#process">Process</a>
+        <a href="#services">Services</a>
+        <a href="#designs">Designs</a>
+        <a href="#results">Results</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="#book" class="btn">Book a Strategy Call</a>
+        <button class="menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').style.display='flex'">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="aurora aurora--hero" aria-hidden="true">
+      <span class="blob b1"></span>
+      <span class="blob b2"></span>
+    </div>
+    <div class="wrap">
+      <span class="eyebrow">Ecommerce Email &amp; SMS Retention</span>
+      <h1>The revenue hiding in your customer list.</h1>
+      <p class="sub">Echo designs, builds, and runs the complete email &amp; SMS retention system behind profitable ecommerce brands — turning one-time buyers into repeat revenue.</p>
+      <div class="hero-cta">
+        <a href="#book" class="btn">Book a Strategy Call</a>
+        <a href="#designs" class="btn btn-ghost">See the work</a>
+      </div>
+      <p class="trust-line">Built for <strong>7 &amp; 8-figure</strong> ecommerce brands on <strong>Klaviyo</strong> &amp; <strong>Shopify</strong>.</p>
+    </div>
+  </section>
+
+  <!-- LOGO MARQUEE (placeholder logos — swap in real B2B brand logos) -->
+  <section class="logos-strip">
+    <div class="wrap"><span class="eyebrow">B2B brands I've worked with</span></div>
+    <div class="marquee">
+      <div class="marquee-track">
+        <div class="marquee-group">
+          <div class="logo-ph"><span class="mark"></span><span class="wm">Logotype</span></div>
+          <div class="logo-ph"><span class="mark round"></span><span class="wm">Brandmark</span></div>
+          <div class="logo-ph"><span class="mark"></span><span class="wm">Company</span></div>
+          <div class="logo-ph"><span class="mark round"></span><span class="wm">Wordmark</span></div>
+          <div class="logo-ph"><span class="mark"></span><span class="wm">Your Logo</span></div>
+          <div class="logo-ph"><span class="mark round"></span><span class="wm">Brand</span></div>
+        </div>
+        <div class="marquee-group" aria-hidden="true">
+          <div class="logo-ph"><span class="mark"></span><span class="wm">Logotype</span></div>
+          <div class="logo-ph"><span class="mark round"></span><span class="wm">Brandmark</span></div>
+          <div class="logo-ph"><span class="mark"></span><span class="wm">Company</span></div>
+          <div class="logo-ph"><span class="mark round"></span><span class="wm">Wordmark</span></div>
+          <div class="logo-ph"><span class="mark"></span><span class="wm">Your Logo</span></div>
+          <div class="logo-ph"><span class="mark round"></span><span class="wm">Brand</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS (placeholder values) -->
+  <div class="stats">
+    <div class="wrap">
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="num">30–40%</div>
+          <div class="label">of ecommerce revenue should come from email &amp; SMS</div>
+        </div>
+        <div class="stat">
+          <div class="num">$00M+</div>
+          <div class="label">in email revenue generated for clients</div>
+          <div class="placeholder-note">Placeholder — add real number</div>
+        </div>
+        <div class="stat">
+          <div class="num">00+</div>
+          <div class="label">automated flows built &amp; optimized</div>
+          <div class="placeholder-note">Placeholder — add real number</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUE PROP -->
+  <section class="valueprop">
+    <div class="wrap">
+      <span class="eyebrow">The opportunity</span>
+      <h2 style="margin-top:22px;">Your best customers are already on your list.</h2>
+      <p>Paid ads get more expensive every quarter. Meanwhile the people who already bought from you — your warmest audience — sit in an inbox you barely email. Retention is where the margin lives. We build the system that captures it.</p>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">How it works</span>
+        <h2 style="margin-top:20px;">A simple 3-step system to compound your revenue</h2>
+        <p>From the first pop-up a visitor sees to the loyalty email a customer opens a year later — one connected system, managed end to end.</p>
+      </div>
+      <div class="process-grid">
+        <div class="step">
+          <div class="n">1</div>
+          <h3>Capture</h3>
+          <p>Turn cold traffic into subscribers with high-converting sign-up forms, pop-ups, and SMS opt-ins that grow your list without hurting the brand.</p>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <h3>Convert</h3>
+          <p>Automate the full customer journey — welcome, abandoned cart, browse abandonment, and post-purchase flows that sell while you sleep.</p>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <h3>Retain</h3>
+          <p>Turn one-time buyers into loyal fans with campaigns, win-back flows, and segmentation that maximize lifetime value and repeat orders.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" style="background:var(--bg-warm); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">What we do</span>
+        <h2 style="margin-top:20px;">Everything your inbox channel needs — under one roof</h2>
+      </div>
+      <div class="services-grid">
+        <div class="svc">
+          <div class="ic">◆</div>
+          <h3>Klaviyo Strategy</h3>
+          <p>A retention strategy built around your brand, margins, and customer data — not a recycled template. We map the flows, segments, and calendar that move the number.</p>
+        </div>
+        <div class="svc">
+          <div class="ic">✎</div>
+          <h3>Conversion Design</h3>
+          <p>On-brand emails that are as beautiful as they are effective. Every layout is designed to guide the eye to the click — aesthetics and function in the same email.</p>
+        </div>
+        <div class="svc">
+          <div class="ic">❝</div>
+          <h3>Persuasive Copywriting</h3>
+          <p>Subject lines people open and copy people act on. Conversion copywriting that sounds like your brand and speaks to why customers actually buy.</p>
+        </div>
+        <div class="svc">
+          <div class="ic">↗</div>
+          <h3>Testing &amp; Optimization</h3>
+          <p>We never “set and forget.” Continuous A/B testing on subject lines, offers, and design, with clear reporting on what's driving revenue.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMAIL DESIGN SHOWCASE -->
+  <section id="designs" class="designs">
+    <div class="aurora aurora--dark" aria-hidden="true">
+      <span class="blob b1"></span>
+      <span class="blob b2"></span>
+      <span class="blob b3"></span>
+    </div>
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Selected work</span>
+        <h2 style="margin-top:20px;">Pretty designs that actually convert</h2>
+        <p>A look at the email designs we build — crafted to match your brand and engineered to drive the click.</p>
+      </div>
+
+      <div class="email-grid">
+        <!-- Placeholder email 1 -->
+        <div class="email-card">
+          <span class="tag">Welcome</span>
+          <div class="bar"><i></i><i></i><i></i></div>
+          <div class="email-body">
+            <div class="ph ph-hero"><span>Your email design</span></div>
+            <div class="ph ph-line w90"></div>
+            <div class="ph ph-line w60"></div>
+            <div class="ph ph-btn"></div>
+          </div>
+        </div>
+        <!-- Placeholder email 2 (tall) -->
+        <div class="email-card tall">
+          <span class="tag">Abandoned Cart</span>
+          <div class="bar"><i></i><i></i><i></i></div>
+          <div class="email-body">
+            <div class="ph ph-hero"><span>Your email design</span></div>
+            <div class="ph ph-line w80"></div>
+            <div class="ph ph-line w90"></div>
+            <div class="ph ph-line w60"></div>
+            <div class="ph ph-btn"></div>
+          </div>
+        </div>
+        <!-- Placeholder email 3 -->
+        <div class="email-card">
+          <span class="tag">Campaign</span>
+          <div class="bar"><i></i><i></i><i></i></div>
+          <div class="email-body">
+            <div class="ph ph-hero"><span>Your email design</span></div>
+            <div class="ph ph-line w90"></div>
+            <div class="ph ph-line w80"></div>
+            <div class="ph ph-btn"></div>
+          </div>
+        </div>
+        <!-- Placeholder email 4 -->
+        <div class="email-card">
+          <span class="tag">Post-Purchase</span>
+          <div class="bar"><i></i><i></i><i></i></div>
+          <div class="email-body">
+            <div class="ph ph-hero"><span>Your email design</span></div>
+            <div class="ph ph-line w80"></div>
+            <div class="ph ph-line w60"></div>
+            <div class="ph ph-btn"></div>
+          </div>
+        </div>
+        <!-- Placeholder email 5 (tall) -->
+        <div class="email-card tall">
+          <span class="tag">Win-Back</span>
+          <div class="bar"><i></i><i></i><i></i></div>
+          <div class="email-body">
+            <div class="ph ph-hero"><span>Your email design</span></div>
+            <div class="ph ph-line w90"></div>
+            <div class="ph ph-line w80"></div>
+            <div class="ph ph-line w60"></div>
+            <div class="ph ph-btn"></div>
+          </div>
+        </div>
+        <!-- Placeholder email 6 -->
+        <div class="email-card">
+          <span class="tag">Product Launch</span>
+          <div class="bar"><i></i><i></i><i></i></div>
+          <div class="email-body">
+            <div class="ph ph-hero"><span>Your email design</span></div>
+            <div class="ph ph-line w90"></div>
+            <div class="ph ph-line w60"></div>
+            <div class="ph ph-btn"></div>
+          </div>
+        </div>
+      </div>
+      <p class="designs-foot">↑ Placeholder frames — drop in your real email designs to replace each one.</p>
+    </div>
+  </section>
+
+  <!-- DELIVERABLES -->
+  <section id="deliverables">
+    <div class="wrap">
+      <div class="deliver-grid">
+        <div>
+          <div class="section-head">
+            <span class="eyebrow">What we'll build for you</span>
+            <h2 style="margin-top:20px;">The core flows every ecommerce brand needs</h2>
+          </div>
+          <ul class="flows-list">
+            <li><span class="check">✓</span> Welcome / New Subscriber <small>Flow</small></li>
+            <li><span class="check">✓</span> Abandoned Cart <small>Flow</small></li>
+            <li><span class="check">✓</span> Browse Abandonment <small>Flow</small></li>
+            <li><span class="check">✓</span> Checkout Abandonment <small>Flow</small></li>
+            <li><span class="check">✓</span> Post-Purchase / Thank You <small>Flow</small></li>
+            <li><span class="check">✓</span> Cross-Sell &amp; Replenishment <small>Flow</small></li>
+            <li><span class="check">✓</span> Win-Back / Sunset <small>Flow</small></li>
+            <li><span class="check">✓</span> VIP &amp; Loyalty <small>Flow</small></li>
+            <li><span class="check">✓</span> Weekly Campaign Calendar <small>Campaigns</small></li>
+            <li><span class="check">✓</span> List Growth Pop-ups &amp; Forms <small>Capture</small></li>
+          </ul>
+        </div>
+        <div class="deliver-card">
+          <h3>A retention engine, fully managed</h3>
+          <p>We handle strategy, design, copy, build, and optimization — so you get a channel that runs itself and a partner who's accountable to the revenue, not the busywork.</p>
+          <p style="margin-top:16px;">Book a call and we'll audit your current setup and show you exactly what's leaking.</p>
+          <a href="#book" class="btn">Get your free audit</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS / COMPARISON -->
+  <section id="results" style="background:var(--bg-warm); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Why Echo</span>
+        <h2 style="margin-top:20px;">Not your average email agency</h2>
+        <p>Boutique by design. We take on a limited number of brands so every account gets senior attention — not a hand-off to a junior the day you sign.</p>
+      </div>
+      <div class="compare">
+        <div class="compare-col them">
+          <h3>Other agencies</h3>
+          <ul>
+            <li><span class="mark">✕</span> Slow, reactive communication</li>
+            <li><span class="mark">✕</span> Single-channel (email only)</li>
+            <li><span class="mark">✕</span> Templated, off-brand designs</li>
+            <li><span class="mark">✕</span> Set-and-forget flows</li>
+            <li><span class="mark">✕</span> Work outsourced to junior talent</li>
+            <li><span class="mark">✕</span> Vanity metrics, vague reporting</li>
+          </ul>
+        </div>
+        <div class="compare-col us">
+          <h3>Echo</h3>
+          <ul>
+            <li><span class="mark">✓</span> Proactive, senior partnership</li>
+            <li><span class="mark">✓</span> Email + SMS, one system</li>
+            <li><span class="mark">✓</span> Custom design built to your brand</li>
+            <li><span class="mark">✓</span> Continuous testing &amp; optimization</li>
+            <li><span class="mark">✓</span> A limited roster — real focus</li>
+            <li><span class="mark">✓</span> Revenue-first, transparent reporting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDER -->
+  <section class="founder">
+    <div class="wrap">
+      <div class="founder-grid">
+        <div class="founder-photo"><span>Founder photo</span></div>
+        <div>
+          <span class="eyebrow">Meet the founder</span>
+          <h2 style="margin-top:16px;">Katie Thies</h2>
+          <div class="role">Founder</div>
+          <p>Katie has spent 10+ years in SaaS and ecommerce marketing, with a background in conversion copywriting and lifecycle strategy. She's a 2017 Copywriter Mastermind graduate and has been called "one of the smartest marketers out there."</p>
+          <p>Echo is boutique on purpose. Katie takes on a small number of brands at a time so she can be genuinely close to the work — the strategy, the copy, and the numbers — instead of handing your account to someone who's never seen your store.</p>
+          <a href="#book" class="btn">Let's talk retention</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Questions</span>
+        <h2 style="margin-top:20px;">Frequently asked</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q">Who is Echo for? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Echo works best with established ecommerce brands (typically doing 7–8 figures) on Shopify and Klaviyo who know email &amp; SMS should be driving more revenue but don't have the in-house team to make it happen.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How does your pricing work? <span class="plus">+</span></button>
+          <div class="faq-a"><p>We work on a flat monthly retainer based on scope, so incentives stay aligned and there are no surprises. Book a strategy call and we'll scope the right engagement for your brand.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Will this work for my brand? <span class="plus">+</span></button>
+          <div class="faq-a"><p>If you have a customer list and a product people re-buy or recommend, there's almost always untapped revenue in your inbox. On our first call we'll audit your current setup and tell you honestly whether we're a fit.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How much time does it require from me? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Very little. After onboarding we run the channel end to end — strategy, design, copy, and build — with a lightweight approval loop and clear reporting. You stay informed without being in the weeds.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What platforms do you work on? <span class="plus">+</span></button>
+          <div class="faq-a"><p>We specialize in Klaviyo for email &amp; SMS, on Shopify stores. If you're on another stack, mention it on the call and we'll let you know if we can help.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Do you have minimum contracts? <span class="plus">+</span></button>
+          <div class="faq-a"><p>We ask for a short initial commitment so there's time to build the flows and see results — retention compounds over months, not days. We'll cover the exact terms on our call.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section id="book" class="final" style="background:var(--bg-warm); border-top:1px solid var(--line);">
+    <div class="wrap">
+      <span class="eyebrow">Ready when you are</span>
+      <h2 style="margin-top:22px;">Let's turn your list into your best sales channel.</h2>
+      <p>Book a free strategy call. We'll audit your current email &amp; SMS setup and show you exactly where the revenue is leaking — no pressure, no jargon.</p>
+      <a href="mailto:catherineathies@gmail.com?subject=Ecommerce%20Email%20Strategy%20Call" class="btn">Book a Strategy Call</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap foot-inner">
+      <div class="brand">Echo<span>· Email &amp; Retention</span></div>
+      <nav class="foot-links">
+        <a href="#process">Process</a>
+        <a href="#services">Services</a>
+        <a href="#designs">Designs</a>
+        <a href="#faq">FAQ</a>
+        <a href="#book">Book a Call</a>
+      </nav>
+      <div class="foot-copy">© Katie Thies Consulting 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    // FAQ accordion
+    document.querySelectorAll('.faq-q').forEach(function (q) {
+      q.addEventListener('click', function () {
+        var item = q.parentElement;
+        var a = item.querySelector('.faq-a');
+        var isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(function (i) {
+          i.classList.remove('open');
+          i.querySelector('.faq-a').style.maxHeight = null;
+        });
+        if (!isOpen) {
+          item.classList.add('open');
+          a.style.maxHeight = a.scrollHeight + 'px';
+        }
+      });
+    });
+  </script>
+
+  <!-- 10 — Film grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- 2 — Smooth scroll (Lenis) -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script>
+    // Flag JS so the hero heading-reveal initial (hidden) state only applies when JS can un-hide it.
+    document.documentElement.classList.add('js');
+
+    // 3 — Editorial heading reveal — HERO HEADLINE ONLY (word-by-word rise on load)
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var h = document.querySelector('.hero h1');
+      if (!h) return;
+      h.classList.add('reveal');
+      var tokens = h.textContent.split(/(\s+)/);
+      h.textContent = '';
+      var wi = 0;
+      tokens.forEach(function (tok) {
+        if (tok === '') return;
+        if (/^\s+$/.test(tok)) { h.appendChild(document.createTextNode(' ')); return; }
+        var word = document.createElement('span'); word.className = 'word';
+        var inner = document.createElement('span'); inner.className = 'word-inner';
+        inner.textContent = tok;
+        inner.style.transitionDelay = (wi * 0.05) + 's';
+        word.appendChild(inner); h.appendChild(word); wi++;
+      });
+      if (reduce) { h.classList.add('is-visible'); return; }
+      // Hero is above the fold — let the hidden state paint, then reveal (with a safety fallback
+      // so the headline can never get stuck hidden if rAF is throttled in a background tab).
+      requestAnimationFrame(function () { requestAnimationFrame(function () { h.classList.add('is-visible'); }); });
+      setTimeout(function () { h.classList.add('is-visible'); }, 900);
+    })();
+
+    // 2 — Smooth scroll (Lenis) + smooth in-page anchor links
+    if (window.Lenis) {
+      var lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+      function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+      document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          var id = a.getAttribute('href');
+          if (id.length > 1) {
+            var el = document.querySelector(id);
+            if (el) { e.preventDefault(); lenis.scrollTo(el, { offset: -70 }); }
+          }
+        });
+      });
+    }
+  </script>
+
+  <!-- Inline copy editor toolbar (only activates on a local file / localhost) -->
+  <div id="echo-editor" aria-hidden="true">
+    <span id="ee-hint" hidden>Click any text to edit it — the design stays fixed. Then download.</span>
+    <button id="ee-save" hidden>💾 Download index.html</button>
+    <button id="ee-toggle">✏️ Edit copy</button>
+  </div>
+  <script>
+    (function () {
+      // The editor is available locally and on any preview/staging host (e.g. GitHub Pages),
+      // but NEVER on the live production domain, so real visitors never see it.
+      var PROD_HOSTS = ['echobrand.io', 'www.echobrand.io'];
+      if (PROD_HOSTS.indexOf(location.hostname) !== -1) return;
+
+      var EDITABLE = [
+        '.brand', '.nav-links a', '.nav-cta .btn',
+        '.hero .eyebrow', '.hero h1', '.hero p.sub', '.trust-line',
+        '.logos-strip .eyebrow', '.logo-ph .wm',
+        '.stat .num', '.stat .label', '.placeholder-note',
+        '.valueprop .eyebrow', '.valueprop h2', '.valueprop p',
+        '.section-head .eyebrow', '.section-head h2', '.section-head p',
+        '.step h3', '.step p', '.svc h3', '.svc p', '.designs-foot',
+        '.email-card .tag', '.ph-hero span',
+        '.flows-list li', '.deliver-card h3', '.deliver-card p',
+        '.compare-col h3', '.compare-col li',
+        '.founder .eyebrow', '.founder h2', '.founder .role', '.founder p',
+        '.faq-q', '.faq-a p',
+        '.final .eyebrow', '.final h2', '.final p',
+        '.foot-copy', '.foot-links a'
+      ].join(',');
+
+      var bar = document.getElementById('echo-editor');
+      var toggle = document.getElementById('ee-toggle');
+      var save = document.getElementById('ee-save');
+      var hint = document.getElementById('ee-hint');
+      bar.style.display = 'flex';
+
+      var editing = false;
+
+      function setEditing(on) {
+        editing = on;
+        if (on) {
+          // reset the animated hero headline back to plain text so it edits cleanly
+          var h1 = document.querySelector('.hero h1');
+          if (h1) { h1.classList.remove('reveal', 'is-visible'); h1.textContent = h1.textContent; }
+          // open every FAQ answer so its copy is visible/editable
+          document.querySelectorAll('.faq-item').forEach(function (i) {
+            i.classList.add('open');
+            var a = i.querySelector('.faq-a'); if (a) a.style.maxHeight = a.scrollHeight + 'px';
+          });
+          document.body.classList.add('ee-editing');
+          document.querySelectorAll(EDITABLE).forEach(function (el) { el.setAttribute('contenteditable', 'true'); });
+          toggle.textContent = '✓ Done';
+          save.hidden = false; hint.hidden = false;
+        } else {
+          document.querySelectorAll('[contenteditable]').forEach(function (el) { el.removeAttribute('contenteditable'); });
+          document.body.classList.remove('ee-editing');
+          toggle.textContent = '✏️ Edit copy';
+          save.hidden = true; hint.hidden = true;
+        }
+      }
+      toggle.addEventListener('click', function () { setEditing(!editing); });
+
+      // While editing, clicking a link/button should place the cursor, not navigate.
+      document.addEventListener('click', function (e) {
+        if (!editing) return;
+        var a = e.target.closest('a, .btn');
+        if (a && a.getAttribute('contenteditable') === 'true') e.preventDefault();
+      }, true);
+
+      function download(name, text) {
+        var blob = new Blob([text], { type: 'text/html' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = name; document.body.appendChild(a); a.click();
+        setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 500);
+      }
+
+      save.addEventListener('click', function () {
+        setEditing(false); // return DOM to a clean, non-editing state first
+        var docEl = document.documentElement.cloneNode(true);
+        docEl.classList.remove('js');
+        var h1 = docEl.querySelector('.hero h1');
+        if (h1) { h1.classList.remove('reveal', 'is-visible'); h1.textContent = h1.textContent; }
+        docEl.querySelectorAll('.faq-item').forEach(function (i) {
+          i.classList.remove('open');
+          var a = i.querySelector('.faq-a'); if (a) a.removeAttribute('style');
+        });
+        docEl.querySelectorAll('[contenteditable]').forEach(function (el) { el.removeAttribute('contenteditable'); });
+        var b = docEl.querySelector('body'); if (b) b.classList.remove('ee-editing');
+        var s = docEl.querySelector('#ee-save'); if (s) s.setAttribute('hidden', '');
+        var hn = docEl.querySelector('#ee-hint'); if (hn) hn.setAttribute('hidden', '');
+        var tg = docEl.querySelector('#ee-toggle'); if (tg) tg.textContent = '✏️ Edit copy';
+        var ed = docEl.querySelector('#echo-editor'); if (ed) ed.removeAttribute('style');
+        var nl = docEl.querySelector('.nav-links'); if (nl) nl.removeAttribute('style');
+        download('index.html', '<!DOCTYPE html>\n' + docEl.outerHTML);
+      });
+    })();
+  </script>
+</body>
+</html>
